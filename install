@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# check user site packages, if not installed there, copy it in.
+sitepackages="$(python3 -m site --user-site)"
+
+find $PWD -iname "*.py" | while read file; do
+if [ ! -f "$sitepackages/`basename "$file"`" ]
+	then
+		echo installing $file into "$sitepackages"...
+		cp $file "$sitepackages"
+	else
+		if [ "$file" -nt "$sitepackages/`basename "$file"`" ]
+			then
+				echo updating "$sitepackages/`basename "$file"`"...
+				cp -f $file "$sitepackages"
+			else
+				# I need to put a "newer file" check in here or maybe just overwrite every time.
+				echo already installed "$sitepackages/`basename "$file"`"
+			fi
+	fi
+done;
