@@ -48,12 +48,19 @@ def squarepix(clip, height=576, crop=1.0, aspect=16/9, outaspect=16/9, sd_mode=7
 	v1 = letterbox(v1,opad,opad)
 	return v1
 
-def SDtoHD(clip, crop=1.0, aspect=16/9, sd_mode=702, hq=True,off_w=0,off_h=0, scale=1):
+def SDtoHD(clip, crop=1.0, aspect=16/9, sd_mode=702, hq=True,off_w=0,off_h=0, scale=1, hd720=False):
 	# if crop is 0, full pillarbox. if crop is 1, full crop. anything in between is a compromise.
 	# you should handle deinterlacing before running me.
 	# express aspect as a fraction or float
 	# sd_mode determines if we're working in 702 maths (analog, the "correct" way), or 720 or whatever.
 	# hq does a nnedi3 upscale first. overkill for archival SD, worth doing for sharp stuff.
+	if hd720:
+		width=1280
+		height=720
+	else:
+		width=1920
+		height=1080
+
 	clip = clip.fmtc.resample(css="444")	
 	if hq:
 		sd_mode = sd_mode*2
@@ -65,8 +72,8 @@ def SDtoHD(clip, crop=1.0, aspect=16/9, sd_mode=702, hq=True,off_w=0,off_h=0, sc
 	sh = (((clip.height/par)*(crop))+(clip.height*(1-crop)))/scale
 	spadx = (clip.width-sw)/2
 	spady = (clip.height-sh)/2
-	opad = -spadx * 1280/sw
-	v1 = clip.fmtc.resample(w=1280,h=720,sw=sw,sh=sh,sx=spadx-off_w,sy=spady+off_h)
+	opad = -spadx * width/sw
+	v1 = clip.fmtc.resample(w=width,h=height,sw=sw,sh=sh,sx=spadx-off_w,sy=spady+off_h)
 	v1 = letterbox(v1,opad,opad)
 	return v1
 
@@ -145,7 +152,7 @@ def deinterlace(clip, dbl=False, order=1, usefield="noodle"):
 
 # Sal's custom NR FUNctions.
 
-def dvnr(clip, sad=150, scd1=200, scd2=50, blk=8, pel=2):
+def dvnr(clip, sad=300, scd1=75, scd2=50, blk=8, pel=2):
 	core = vs.get_core()
 	scd2=int(255*(scd2/100))
 
@@ -167,7 +174,8 @@ def dvnr3(clip, sad=390, scd1=200, scd2=50, blk=8, pel=4):
 	scd2=int(255*(scd2/100))
 
 	v1 = clip
-	blur = core.bilateral.Bilateral(v1,v1, 8*v1.height/1080, .04, algorithm=1)
+	blur = core.bilateral.Bilateral(v1, ref=v1, sigmaS=6*v1.height/1080, sigmaR=.025, algorithm=2,planes=[0])
+	blur = core.bilateral.Bilateral(blur, ref=blur, sigmaS=16*v1.height/1080, sigmaR=.025, algorithm=2,planes=[1,2])
 	vsuper = core.mv.Super(v1,pel=pel)
 	vsuperblur = core.mv.Super(blur,pel=pel)
 	vf = core.mv.Analyse(vsuperblur,blksize=blk,overlap=int(blk/2),dct=False,isb=False)
@@ -186,7 +194,8 @@ def dvnr5(clip, sad=390, scd1=200, scd2=50, blk=16, pel=4):
 	scd2=int(255*(scd2/100))
 
 	v1 = clip
-	blur = core.bilateral.Bilateral(v1,v1, 8*v1.height/1080, .04, algorithm=1)
+	blur = core.bilateral.Bilateral(v1, ref=v1, sigmaS=6*v1.height/1080, sigmaR=.025, algorithm=2,planes=[0])
+	blur = core.bilateral.Bilateral(blur, ref=blur, sigmaS=16*v1.height/1080, sigmaR=.025, algorithm=2,planes=[1,2])
 	vsuper = core.mv.Super(v1,pel=pel)
 	vsuperblur = core.mv.Super(blur,pel=pel)
 	vf = core.mv.Analyse(vsuperblur,blksize=blk,overlap=int(blk/2),dct=False,isb=False)
@@ -210,7 +219,8 @@ def dvnr7(clip, sad=250, scd1=200, scd2=50, blk=16, pel=4):
 	scd2=int(255*(scd2/100))
 
 	v1 = clip
-	blur = core.bilateral.Bilateral(v1,v1, 8*v1.height/1080, .04, algorithm=1)
+	blur = core.bilateral.Bilateral(v1, ref=v1, sigmaS=6*v1.height/1080, sigmaR=.025, algorithm=2,planes=[0])
+	blur = core.bilateral.Bilateral(blur, ref=blur, sigmaS=16*v1.height/1080, sigmaR=.025, algorithm=2,planes=[1,2])
 	vsuper = core.mv.Super(v1,pel=pel)
 	vsuperblur = core.mv.Super(blur,pel=pel)
 	vf = core.mv.Analyse(vsuperblur,blksize=blk,overlap=int(blk/2),dct=False,isb=False)
@@ -269,7 +279,7 @@ def dvnrmed(clip, sad=150, scd1=200, scd2=33, blk=8, pel=2, show=False, multipli
 		v1 = core.std.StackHorizontal([v1,mask.std.SelectEvery(3,1)])
 	return v1
 
-def fpsblur(clip,fpsnum=24000,fpsden=1000, sad=150,scd1=1000,scd2=50,blk=16,pel=2,samples=9,shutter=0.5,exponent=5, stabilize=True):
+def fpsblur(clip,fpsnum=24000,fpsden=1000, sad=300,scd1=1000,scd2=50,blk=16,pel=2,samples=9,shutter=0.5,exponent=10, stabilize=True, ml=200):
 	core = vs.get_core()
 	scd2=int(255*(scd2/100))
 	ssamples = int(samples/shutter)
@@ -286,7 +296,8 @@ def fpsblur(clip,fpsnum=24000,fpsden=1000, sad=150,scd1=1000,scd2=50,blk=16,pel=
 		pandata = core.mv.DepanAnalyse(v1, vectors=vf, zoom=True, rot=True)
 		v1 = core.mv.DepanStabilise(v1, data=pandata, dxmax=32, dymax=32, zoommax=1.2,rotmax=2,mirror=15,blur=0,method=1)
 
-	blur = core.bilateral.Bilateral(v1,v1, 8*v1.height/1080, .04, algorithm=1)
+	blur = core.bilateral.Bilateral(v1, ref=v1, sigmaS=6*v1.height/1080, sigmaR=.025, algorithm=2,planes=[0])
+	blur = core.bilateral.Bilateral(blur, ref=blur, sigmaS=16*v1.height/1080, sigmaR=.025, algorithm=2,planes=[1,2])
 	vsuper = core.mv.Super(v1,pel=pel)
 	vsuperblur = core.mv.Super(blur,pel=pel)
 	vf = core.mv.Analyse(vsuperblur,blksize=blk,overlap=int(blk/2),dct=False,isb=False)
@@ -296,7 +307,64 @@ def fpsblur(clip,fpsnum=24000,fpsden=1000, sad=150,scd1=1000,scd2=50,blk=16,pel=
 	denoise = core.misc.AverageFrames([compf,v1,compb], [1,1,1])
 
 	vsuperdvnr = core.mv.Super(denoise,pel=pel)
-	hifps = core.mv.BlockFPS(denoise,vsuperdvnr,vb,vf,fpsnum*ssamples,fpsden,thscd1=scd1,thscd2=scd2,ml=50)
+	hifps = core.mv.BlockFPS(denoise,vsuperdvnr,vb,vf,fpsnum*ssamples,fpsden,thscd1=scd1,thscd2=scd2,ml=ml)
+	hifps = core.misc.AverageFrames(hifps,np.full(samples,1))
+	out = core.std.SelectEvery(hifps,ssamples,0)
+
+	v1 = core.fmtc.bitdepth(out, bits=32)
+	v1 = core.std.Expr(v1,expr=["x "+exp+" * 1 + log "+exp+" log /","",""])
+	v1 = core.fmtc.bitdepth(v1, bits=16)
+
+	return v1
+
+def qfpsblur(clip,fpsnum=24000,fpsden=1000,samples=9,shutter=0.5,exponent=10, stabilize=True, fast=True, denoise=False):
+	core = vs.get_core()
+	ssamples = int(samples/shutter)
+	exp=str(exponent)
+	
+	v1 = clip
+	lofi = core.resize.Lanczos(clip, format=vs.YUV444P8, matrix_s="709", transfer_s="709", primaries_s="709", matrix_in_s="170m", transfer_in_s="601", primaries_in_s="170m")
+
+	v1 = core.fmtc.bitdepth(v1, bits=32)
+	v1 = core.std.Expr(v1, expr=[exp+" x pow 1 - "+exp+" /","",""])
+	v1 = core.fmtc.bitdepth(v1, bits=16)
+	if fast:
+		pel=2
+		sad=200
+	else:
+		pel=4
+		sad=100
+
+	if stabilize:
+		vsuper = core.mv.Super(clip=lofi, pel=1, chroma=True)
+		vf = core.mv.Analyse(vsuper,blksize=32,overlap=0,dct=5,isb=False)
+		pandata = core.mv.DepanAnalyse(v1, vectors=vf, zoom=True, rot=True)
+		v1 = core.mv.DepanStabilise(v1, data=pandata, dxmax=32, dymax=32, zoommax=1.2,rotmax=2,mirror=15,blur=0,method=1)
+
+	vsuperlinlight = core.mv.Super(clip=v1, pel=pel, chroma=True)
+	vsuper = core.mv.Super(clip=lofi, pel=pel, chroma=True)
+	vf = core.mv.Analyse(super=vsuper, blksize=32, isb=False,dct=5,overlap=0,delta=1, truemotion=True, chroma=False)
+	vf = core.mv.Recalculate(vsuper, vf, thsad=sad, blksize=8,overlap=0, dct=7, truemotion=False, chroma=False)
+	vb = core.mv.Analyse(super=vsuper, blksize=32, isb=True,dct=5,overlap=0,delta=1, truemotion=True, chroma=False)
+	vb = core.mv.Recalculate(vsuper, vb, thsad=sad, blksize=8,overlap=0, dct=7, truemotion=False, chroma=False)
+	if denoise:
+		compf = core.mv.Compensate(v1,vsuperlinlight,vf,thsad=sad)
+		compb = core.mv.Compensate(v1,vsuperlinlight,vb,thsad=sad)
+		v1 = core.misc.AverageFrames([compf,v1,compb], [1,1,1])
+	msk1 = core.mv.BlockFPS(clip=v1, super=vsuper, mvbw=vb, mvfw=vf, num=fpsnum*ssamples, den=fpsden, blend=False, mode=5,ml=10)
+	fps1 = core.mv.FlowFPS(clip=v1, super=vsuperlinlight, mvbw=vb, mvfw=vf, num=fpsnum*ssamples, den=fpsden, blend=False)
+
+	vf3 = core.mv.Analyse(super=vsuper, blksize=32, isb=False,dct=5,overlap=0,delta=3, truemotion=True, chroma=False)
+	vf3 = core.mv.Recalculate(vsuper, vf, thsad=sad, blksize=8,overlap=0, dct=7, truemotion=False, chroma=False)
+	vb3 = core.mv.Analyse(super=vsuper, blksize=32, isb=True,dct=5,overlap=0,delta=3, truemotion=True, chroma=False)
+	vb3 = core.mv.Recalculate(vsuper, vb, thsad=sad, blksize=8,overlap=0, dct=7, truemotion=False, chroma=False)
+	msk3 = core.mv.BlockFPS(clip=v1, super=vsuper, mvbw=vb3, mvfw=vf3, num=fpsnum*ssamples, den=fpsden, blend=False, mode=5,ml=10)
+	fps3 = core.mv.FlowFPS(clip=v1, super=vsuperlinlight, mvbw=vb, mvfw=vf, num=fpsnum*ssamples, den=fpsden, blend=False)
+
+	expr = "z a < x y ?"
+	hifps = core.std.Expr(clips=[fps1, fps3, msk1, msk3], expr=[expr, "",""])
+	if fast:
+		hifps = fps1
 	hifps = core.misc.AverageFrames(hifps,np.full(samples,1))
 	out = core.std.SelectEvery(hifps,ssamples,0)
 
@@ -310,3 +378,23 @@ def fpsblur(clip,fpsnum=24000,fpsden=1000, sad=150,scd1=1000,scd2=50,blk=16,pel=
 #	core = vs.get_core()
 #	return core.std.AddBorders(clip, left=int((1920-clip.width)/2), right=int(0.5 + (1920-clip.width)/2), top=int((1080-clip.height)/2), bottom=int(0.5 + (1080-clip.height)/2))
 #	
+
+def ledfilter(clip,period=59.4,fwidth=9,forder=3,startrow=10,nrows=24, mthreshold=0.002, soft=5):
+	core = vs.get_core()
+	v1 = core.resize.Lanczos(clip, format=vs.YUV444PS)
+
+	centre=clip.height / period
+	f1 = centre-fwidth
+	f2 = centre
+	f3 = centre+fwidth
+	rad=soft
+	passes=1
+	filtered = core.std.ShufflePlanes(clips=[v1], planes=[0, 1, 2], colorfamily=vs.RGB)
+	filtered = core.std.Transpose(filtered).vcfreq.F1Quiver(filter=[4,f1,f3,forder], morph=0, custom=0, test=0, strow=startrow, nrows=24, gamma=0.15).std.Transpose()
+	filtered = core.std.ShufflePlanes(clips=[filtered], planes=[0, 1, 2], colorfamily=vs.YUV)
+	protectmask = core.std.Expr([v1, filtered], expr=["x y - abs "+str(mthreshold)+" > 0 1 ?","",""]).std.BoxBlur(planes=[1,0],hradius=rad,hpasses=passes,vradius=rad,vpasses=passes).std.ShufflePlanes(planes=[0, 0, 0], colorfamily=vs.YUV)
+	v1 = core.std.Expr([v1,filtered,protectmask], expr=["x 1 z - * y z * +","x 1 z - * y z * +","x 1 z - * y z * +"])
+
+	v1 = core.resize.Lanczos(v1, format=vs.YUV444P16)
+
+	return v1
