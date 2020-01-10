@@ -9,5 +9,6 @@ saltools.py contains functions for processing video including:
 - field matching based on simple adjacent field comprison
 - cleanup of any residual combing (such as with analog video with timebase errors or video with slow fades below combing thresholds)
 - deinterlace
+- removal of phasing caused by LED lighting on rolling shutter (must specify a period by counting wave lengths visually)
 
 framestats.py contains tools for video analysis and measurement allowing automated quality control and logging.
