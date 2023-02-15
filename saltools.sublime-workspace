@@ -1,0 +1,220 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"Pa",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/sal/src/MECSim_Analytics/input/Master.inp",
+		"/home/sal/src/MECSim_Analytics/python/Master.sk",
+		"/home/sal/src/sal-vapoursynth-scripts/saltools.py",
+		"/home/sal/src/sal-vapoursynth-scripts/install",
+		"/home/sal/src/sal-vapoursynth-scripts/framestats.py",
+		"/home/sal/src/MECSim_Analytics/python/GenerateScript.ipynb",
+		"/home/sal/src/MECSim_Analytics/python/GenerateScript.py",
+		"/home/sal/src/sal-vapoursynth-scripts/__init__.py",
+		"/home/sal/.local/lib/python3.6/site-packages/vsscripts/saltools.py",
+		"/home/sal/src/MECSim_Analytics/python/BayesianAnalysis.ipynb",
+		"/home/sal/Desktop/Sal/BATCHES/rushes-60p.sh",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_172933.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_173133.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_165542.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_173539.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_173255.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_164743.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_161030.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_173149.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_162157.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_165450.vpy",
+		"/home/sal/Pictures/huawei/2018-10-20/VID_20181019_164618.vpy",
+		"/home/sal/Desktop/Sal/BATCHES/rushes-24p.sh",
+		"/home/sal/src/youtube-dl/youtube_dl/extractor/dailymotion.py",
+		"/home/sal/Desktop/Sal/BATCHES/install-tools.sh",
+		"/home/sal/src/MECSim_Analytics/README.md",
+		"/usr/local/bin/encode-prores-ebur128.sh",
+		"/home/sal/.local/lib/python3.6/site-packages/saltools.py",
+		"/home/sal/Pictures/raw/2018-10-15/MVI_1133.vpy",
+		"/home/sal/Pictures/raw/2018-10-15/MVI_1131.vpy",
+		"/home/sal/.local/lib/python3.6/site-packages/vsscripts/framestats.py",
+		"/usr/share/vsscripts/framestats.py",
+		"/media/sal/HS-4TB/00A-Music/Full Albums/The Mountain Goats/The Mountain Goats - 2008 - Heretic Pride/The Mountain Goats - Heretic Pride.cue",
+		"/media/sal/HS-4TB/00A-Music/Full Albums/The Mountain Goats/The Mountain Goats - 2008 - Heretic Pride/The Mountain Goats - Heretic Pride (flac).cue",
+		"/home/sal/src/LV2_Guitar/header/lv2_event_helpers.h",
+		"/home/sal/src/LV2_Guitar/install_lv2.sh",
+		"/home/sal/src/LV2_Guitar/lv2_guitar.c",
+		"/home/sal/Music/Pink Floyd - Wish You Were Here (LP)_squash.cue",
+		"/home/sal/Music/Pink Floyd - The Wall (LP)_smash.cue",
+		"/home/sal/hiddensouk.googledrive/HiddenSouk/transactions-csv/pdf/test.txt",
+		"/media/sal/HS-4TB/04-Music/Music-recids/Pink Floyd - The Wall (LP)/Pink Floyd - The Wall (LP).RPP",
+		"/media/sal/HS-4TB/04-Music/Music-recids/The Beatles - The White Album (LP mono)/The Beatles - The White Album (LP mono).cue",
+		"/media/sal/HS-4TB/04-Music/Music-recids/Led Zeppelin - Physical Graffiti LP.cue"
+	],
+	"find":
+	{
+		"height": 26.0
+	},
+	"find_in_files":
+	{
+		"height": 101.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			",format=\"YUV422P10\")",
+			"lsmas.LibavSMASHSource",
+			"$ffmpegBin -i",
+			"\" 0 0 \""
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			")",
+			"ffms2.Source",
+			"$ffmpegBin -nostdin -i",
+			"\""
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "saltools.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 247.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
